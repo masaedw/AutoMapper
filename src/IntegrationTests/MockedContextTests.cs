@@ -73,9 +73,18 @@ namespace AutoMapper.IntegrationTests
         {
             var context = SetupMock();
 
-            var dtos = await context.Object.Sources.ProjectTo<SourceDto>(Configuration).ToListAsync();
+            var dtos = await context.Object.Sources
+                .Where(e => e.Email.Contains("example"))
+                .ProjectTo<SourceDto>(Configuration).ToListAsync();
 
             dtos.ShouldNotBeNull();
+
+            var dto = await context.Object.Sources
+                .Where(e => e.Email.Contains("example"))
+                .ProjectTo<SourceDto>(Configuration)
+                .FirstAsync();
+
+            dto.ShouldNotBeNull();
         }
 
         // TestDbAsyncQueryProvider from https://msdn.microsoft.com/en-us/library/dn314429(v=vs.113).aspx
